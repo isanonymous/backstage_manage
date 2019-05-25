@@ -1,0 +1,9 @@
+######## Initializers ########
+#org.springframework.context.ApplicationContextInitializer=\
+#cn.z.config.TestApplicationContextInitializer
+
+######### Application Listeners ########
+org.springframework.boot.SpringApplicationRunListener=\
+cn.z.config.TestListener
+
+######### Auto Configure ########

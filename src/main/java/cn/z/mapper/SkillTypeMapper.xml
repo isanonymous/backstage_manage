@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.z.mapper.SkillTypeMapper">
+    <resultMap id="skillType" type="cn.z.entity.SkillType">
+        <id property="skillTypeId" column="skill_type_id"/>
+        <result property="skillTypeName" column="skill_type_name"/>
+        <result property="parent" column="parent"/>
+        <!--<result property="level" column="level"/>-->
+        <result property="isLeaf" column="is_leaf"/>
+        <!--<association property="dept" resultMap="cn.z.mapper.DeptMapper.dept"/>-->
+    </resultMap>
+</mapper>

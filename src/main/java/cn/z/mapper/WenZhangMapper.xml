@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.z.mapper.WenZhangMapper">
+    <resultMap id="wenZhang" type="cn.z.entity.WenZhang">
+        <id property="wzId" javaType="Long" column="wz_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="lateUpdDate" column="late_upd_date"/>
+        <!--<association property="skillType" typeHandler="cn.z.entity.TestTypeHandler" resultMap="cn.z.mapper.SkillTypeMapper.skillType"/>-->
+        <association property="skillType" resultMap="cn.z.mapper.SkillTypeMapper.skillType"/>
+    </resultMap>
+    <update id="upd">
+        UPDATE wz
+        <set>
+            <trim suffixOverrides=",">
+            <if test="title!=null">
+                title=#{title},
+            </if>
+            <if test="content!=null">
+                content=#{content},
+            </if>
+            </trim>
+        </set>
+        where wz_id =#{wz_id}
+    </update>
+    
+    <delete id="delPlural">
+        DELETE FROM wz where wz_id in
+        <foreach collection="array" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <delete id="del">
+        DELETE FROM wz WHERE wz_id=#{id}
+    </delete>
+
+    <!--<select id="get" resultType="com.atguigu.springboot.entity.Emp">
+        select * from emp where id=#{idxxxx}
+    </select>-->
+
+    <select id="selById" resultType="cn.z.entity.WenZhang">
+        select * from wz where wz_id=#{id}
+    </select>
+    
+    <select id="list" resultType="cn.z.entity.WenZhang">
+        select * from wz where title is not null
+    </select>
+
+    <insert id="ins" useGeneratedKeys="true" keyProperty="wz_id" parameterType="cn.z.mapper.WenZhangMapper">
+        INSERT INTO wz(title,content) VALUES (#{title},#{content})
+    </insert>
+
+    <!--<insert id="insert" parameterType="cn.z.entity.WenZhang">
+        INSERT INTO wz(title, content, late_upd_date, skill_type) 
+          VALUES(#{title}, #{content}, #{lateUpdDate}, #{skillType.skillTypeId, jdbcType=OTHER})
+    </insert>-->
+
+    <!--    public Employee getEmpById(Integer id);
+ 
+     public void insertEmp(Employee employee);-->
+    <!--<select id="getEmpById" resultType="com.atguigu.springboot.bean.Employee">
+        SELECT * FROM employee WHERE id=#{id}
+    </select>
+
+    <insert id="insertEmp">
+        INSERT INTO employee(lastName,email,gender,d_id) VALUES (#{lastName},#{email},#{gender},#{dId})
+    </insert>-->
+</mapper>
