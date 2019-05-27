@@ -71,17 +71,23 @@ public class FrameCtrl {
     QueryWrapper<WenZhang> qw;
     if (!dbMap.isEmpty()) {
       qw = new QueryWrapper<WenZhang>();
-      String temp;
-      if (StrUtil.isNotBlank(temp = dbMap.getStr("frameName")) ) {
-        qw.like("title", temp);
-      }
-      String[] dates;
-      if (ArrUtil.isNotEmpty(dates = req.getParameterMap().get("lateUpdDate[]")) ) {
+      // String temp;
+      // if (StrUtil.isNotBlank(temp = dbMap.getStr("frameName")) ) {
+      //   qw.like("title", temp);
+      // }
+      // String[] dates;
+      // if (ArrUtil.isNotEmpty(dates = req.getParameterMap().get("lateUpdDate[]")) ) {
+      //   qw.between("late_upd_date", dates[0], dates[1]);
+      // }
+      // if (StrUtil.isNotBlank(temp = dbMap.getStr("frameType")) ) {
+      //   qw.eq("skill_type", temp);
+      // }
+      qw.like(dbMap.getStrIsNotEmpty("frameName"),"title", dbMap.getStr("frameName"));
+      String[] dates = req.getParameterMap().get("lateUpdDate[]");
+      if (ArrUtil.isNotEmpty(dates)) {
         qw.between("late_upd_date", dates[0], dates[1]);
       }
-      if (StrUtil.isNotBlank(temp = dbMap.getStr("frameType")) ) {
-        qw.eq("skill_type", temp);
-      }
+      qw.eq(dbMap.getStrIsNotEmpty("frameType"),"skill_type", dbMap.getStr("frameType"));
     } else {
       // qw = null;
       qw = new QueryWrapper<>();

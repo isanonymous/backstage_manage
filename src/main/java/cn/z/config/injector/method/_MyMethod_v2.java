@@ -48,12 +48,12 @@ public class _MyMethod_v2 extends AbstractMethod {
           String tableName = tableInfo.getTableName();
           // System.out.println(fieldAno.annotationType());  //interface cn.z.config.Join
           // System.out.println(fieldAno.toString());  //@cn.z.config.Join(col=id, joinType=L, tbl=dept)
-          sql=String.format("select %s from %s %s %s on %s.%s = %s.%s"
-                  ,allCol, tableName
-                  ,fieldAno.joinType().getVal(), fieldAno.tbl()
-                  // ,mapperClass., fieldAno.tbl()
-                  ,tableName, f.getName()
-                  ,fieldAno.tbl(), fieldAno.onCol());
+              // sql=String.format("select %s from %s %s %s on %s.%s = %s.%s"
+              //         ,allCol, tableName
+              //         ,fieldAno.joinType().getVal(), fieldAno.tbl()
+              //         // ,mapperClass., fieldAno.tbl()
+              //         ,tableName, f.getName()
+              //         ,fieldAno.tbl(), fieldAno.onCol());
           System.out.println(sql);  //select id,name,age,birthday,dept from emp left join dept on emp.dept = dept.id
         }
       }

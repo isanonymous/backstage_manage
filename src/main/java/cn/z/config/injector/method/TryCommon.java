@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlSource;
 import org.springframework.util.StringUtils;
@@ -98,7 +99,7 @@ public class TryCommon extends AbstractMethod {
                   
                   // String joinType = join.getClass().getDeclaredAnnotation(JoinAndSelect.class).joinType().getVal();
                   // 两张表的join类型
-                  String joinType = ((Annotation)join).annotationType().getDeclaredAnnotation(JoinAndSelect.class).joinType().getVal();
+                  // String joinType = ((Annotation)join).annotationType().getDeclaredAnnotation(JoinAndSelect.class).joinType().getVal();
                   // @{LIR}join的tblName()
                   String tblName = join.getClass().getMethod("tblName").invoke(join).toString();
                             // Map<String, TblRegister.Tbl> registInfo = TblRegister.registInfo;
@@ -133,8 +134,10 @@ public class TryCommon extends AbstractMethod {
                 //获取表名, 通过表名再获取join的表
                 String getTblName = prevTbl != null?prevTbl:getTblName(modelClass, tableInfo);
                 TblRegister.Tbl tblByFk = TblRegister.getTbl(getTblName).getUniqueForeignTbl();
-                String as = StringUtils.isEmpty(tblByFk.getAlias()) ? "" : " AS " + tblByFk.getAlias();
-                tblName = tblByFk.getName()+as;
+                if (tblByFk!=null) {
+                  String as = StringUtils.isEmpty(tblByFk.getAlias()) ? "" : " AS " + tblByFk.getAlias();
+                  tblName = tblByFk.getName() + as;
+                }
               }
             } catch (Exception e) {
               e.printStackTrace();
@@ -163,7 +166,25 @@ public class TryCommon extends AbstractMethod {
           StringBuffer joinOn = produceJoinOn(joinTypeMap, getTblName(modelClass, tableInfo));
           // System.out.println("\n        joinOn:  " + sql.append(joinOn));
           sql.append(joinOn);
-          sql.append(" <where> ${ew.sqlSegment} </where></script>");
+          // sql.append(" <where> ${ew.sqlSegment} </where></script>");
+          String annoValue = null;
+          Class<?>[] methodParamTypes = method.getParameterTypes();  //方法的所有参数的类型
+          for (int i = 0; i < methodParamTypes.length; i++) {
+            Class<?> methodParamType = methodParamTypes[i];
+            if (Wrapper.class.isAssignableFrom(methodParamType)) {
+              Annotation[] annotations = method.getParameterAnnotations()[i];
+              for (Annotation anno : annotations) {
+                if (anno.annotationType() == Param.class) {
+                  annoValue = ((Param)anno).value();
+                }
+              }
+            }
+          }
+          if (annoValue != null) {
+            sql.append(" <if test=\"" +annoValue+ "!=null\">${" +annoValue+ ".customSqlSegment}</if> </script>");
+          } else {
+            sql.append(" </script>");
+          }
 
           methodNameSql.put(method.getName(), sql.toString());
         }
